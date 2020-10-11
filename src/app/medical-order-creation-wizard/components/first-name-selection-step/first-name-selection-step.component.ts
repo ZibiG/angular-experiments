@@ -9,7 +9,7 @@ import { MedicalOrderCreationService } from '../../medical-order-creation.servic
     styleUrls: ['./first-name-selection-step.component.scss'],
 })
 export class FirstNameSelectionStepComponent implements OnInit, OnDestroy {
-    private nextStepSubscription: Subscription;
+    private nextStepTransitionSub: Subscription;
 
     firstName: string;
 
@@ -19,19 +19,23 @@ export class FirstNameSelectionStepComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.firstName = this.medicalOrderCreationService.getFirstName();
-        this.nextStepSubscription = this.medicalOrderCreationService.nextStep.subscribe(
+        this.nextStepTransitionSub = this.medicalOrderCreationService.nextStepTransition$.subscribe(
             () => {
                 this.medicalOrderCreationService.setFirstName(this.firstName);
             }
         );
-        this.medicalOrderCreationService.changeNextStepAccess(this.firstName !== '');
+        this.notifyAboutNextStepTransitionAvailability(this.firstName !== '');
     }
 
     ngOnDestroy(): void {
-        this.nextStepSubscription.unsubscribe();
+        this.nextStepTransitionSub.unsubscribe();
     }
 
     onFirstNameChanged() {
-        this.medicalOrderCreationService.changeNextStepAccess(this.firstName !== '');
+        this.notifyAboutNextStepTransitionAvailability(this.firstName !== '');
+    }
+
+    private notifyAboutNextStepTransitionAvailability(isAvailable: boolean) {
+        this.medicalOrderCreationService.toggleNextStepTransitionAvailability(isAvailable);
     }
 }

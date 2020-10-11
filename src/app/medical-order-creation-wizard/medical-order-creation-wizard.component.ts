@@ -18,13 +18,15 @@ export class MedicalOrderCreationWizardComponent implements OnInit, OnDestroy {
     constructor(
         private medicalOrderCreationService: MedicalOrderCreationService
     ) {}
-    
+
     ngOnInit() {
-        this.nextStepAllowedSubscription =  this.medicalOrderCreationService.advanceToNextStepAllowed.subscribe((nextStepAllowed) => {
-            this.nextStepEnabled = nextStepAllowed;
-        })
+        this.nextStepAllowedSubscription = this.medicalOrderCreationService.nextStepTransitionAvailability$.subscribe(
+            (nextStepAllowed) => {
+                this.nextStepEnabled = nextStepAllowed;
+            }
+        );
     }
-    
+
     ngOnDestroy(): void {
         this.nextStepAllowedSubscription.unsubscribe();
     }

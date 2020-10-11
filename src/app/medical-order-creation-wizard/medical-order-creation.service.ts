@@ -1,15 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class MedicalOrderCreationService {
     private firstName: string  = '';
     private lastName: string = '';
 
-    nextStep = new Subject<void>();
-    advanceToNextStepAllowed = new Subject<boolean>();
+    private readonly nextStepTransition = new Subject<void>();
+    private readonly nextStepTransitionAvailability = new Subject<boolean>();
 
     constructor() {}
+
+    get nextStepTransition$(): Observable<void> {
+        return this.nextStepTransition;
+    }
+
+    get nextStepTransitionAvailability$(): Observable<boolean> {
+        return this.nextStepTransitionAvailability;
+    }
 
     setFirstName(firstName: string) {
         console.log(firstName);
@@ -33,11 +41,11 @@ export class MedicalOrderCreationService {
         alert(`Medical order created for patient ${this.firstName} ${this.lastName}`);
     }
 
-    changeNextStepAccess(isAllowed: boolean) {
-        this.advanceToNextStepAllowed.next(isAllowed);
+    toggleNextStepTransitionAvailability(isAvailable: boolean) {
+        this.nextStepTransitionAvailability.next(isAvailable);
     }
 
     advanceToNextStep() {
-        this.nextStep.next();
+        this.nextStepTransition.next();
     }
 }
