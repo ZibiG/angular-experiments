@@ -1,0 +1,19 @@
+<div [ngSwitch]="currentStep">
+    <app-first-name-selection-step
+        *ngSwitchCase="1"
+    ></app-first-name-selection-step>
+    <app-last-name-selection-step
+        *ngSwitchCase="2"
+    ></app-last-name-selection-step>
+    <app-summary-step *ngSwitchCase="3"></app-summary-step>
+</div>
+<hr>
+<button type="button" *ngIf="currentStep !== 1" (click)="onGoToPreviousStep()">
+    Previous
+</button>
+<button type="button" [disabled]="!nextStepEnabled" *ngIf="currentStep < 3" (click)="onGoToNextStep()">
+    Next
+</button>
+<button type="button" *ngIf="currentStep === 3" (click)="onCreateStep()">
+    Create
+</button>
